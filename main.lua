@@ -21,20 +21,28 @@ mouseover_key = nil
 function love.load()
 	love.window.setTitle("Best Keyboard Ever")
 	love.window.setMode(1280, 400, {resizable = true})
-	keys = generate_keys(layout)
+	global_keys = generate_keys(layout)
 end
 
 function love.update()
-
+	local x, y = love.mouse.getPosition()
+	local key = key_collide(global_keys, x, y,
+		function (key) key.is_hover = true end,
+		function (key) key.is_hover = false end)
 end
 
 function love.draw()
 	love.graphics.clear(26, 26, 26)
-	love.graphics.setColor(51,51,51,255)
 
 	for row_i, row in ipairs(layout) do
 		for key_i, key in ipairs(row) do
-			key = keys[row_i][key_i]
+			key = global_keys[row_i][key_i]
+			if key.is_hover then
+				key.is_hover = false
+				love.graphics.setColor(235,235,235,255)
+			else
+				love.graphics.setColor(51,51,51,255)
+			end
 			love.graphics.rectangle("fill", key.x, key.y, key.width, key.height)
 		end
 	end

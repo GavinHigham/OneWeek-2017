@@ -23,10 +23,28 @@ function generate_keys(keylayout)
 			end
 
 			--love.graphics.rectangle("fill", x, y, width, height)
-			keys[row_i][key_i] = {x = x, y = y, width = width, height = height}
+			keys[row_i][key_i] = {x = x, y = y, width = width, height = height, text = key}
 			x = x + width + keymargin_x * 2
 		end
 	end
 
 	return keys
+end
+
+--If x,y is a point in a key, return that key, else return nil.
+--If a collide_action is provided, call it, passing the colliding key as its sole argument.
+--If a not_collide_action is provided, call it, passing any not-colliding key as its sole argument.
+function key_collide(keys, x, y, collide_action, not_collide_action)
+	local return_key = nil
+	for row_i, row in ipairs(keys) do
+		for key_i, key in ipairs(row) do
+			if (x >= key.x and x <= key.x + key.width) and (y >= key.y and y <= key.y + key.height) then
+				if collide_action then collide_action(key) end
+				return_key = key
+			else
+				if not_collide_action then not_collide_action(key) end
+			end
+		end
+	end
+	return return_key
 end
