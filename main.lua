@@ -1,9 +1,9 @@
 en_us = {
-	{leftgutter = 0, "Esc","`","1","2","3","4","5","6","7","8","9","0","-","="},
-	{leftgutter = 10, "Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]]}, --Double square brackets are an alternative to quotes
-	{leftgutter = 20, --[[To be filled in]] [["]]},
-	{leftgutter = 30, --[[To be filled in]]},
-	{leftgutter = 40, --[[To be filled in]]}
+	{leftgutter = 10, "Esc","`","1","2","3","4","5","6","7","8","9","0","-","="},
+	{leftgutter = 15, "Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]]}, --Double square brackets are an alternative to quotes
+	{leftgutter = 25, --[[To be filled in]] [["]]},
+	{leftgutter = 35, --[[To be filled in]]},
+	{leftgutter = 45, --[[To be filled in]]}
 }
 
 layout = en_us
@@ -24,9 +24,10 @@ function love.draw()
 	love.graphics.setColor(51,51,51,255)
 
 	for row_i, row in ipairs(layout) do
-		rowstart_x = row.leftgutter or 0
+		local x = row.leftgutter or 0
+		local y = row_i * (keyheight + keymargin_y * 2)
+
 		for key_i, key in ipairs(row) do
-			local x, y = rowstart_x, row_i * (keyheight + keymargin_y * 2)
 			local width, height = keywidth, keyheight
 
 			--Special-case keys
@@ -37,7 +38,7 @@ function love.draw()
 			end
 
 			love.graphics.rectangle("fill", x, y, width, height)
-			rowstart_x = rowstart_x + width + keymargin_x * 2
+			x = x + width + keymargin_x * 2
 		end
 	end
 end
