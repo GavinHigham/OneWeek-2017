@@ -1,11 +1,11 @@
 require "keys"
 
 en_us = {
-	{leftgutter = 10, "Esc","`","1","2","3","4","5","6","7","8","9","0","-","="},
-	{leftgutter = 15, "Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]]}, --Double square brackets are an alternative to quotes
-	{leftgutter = 25, --[[To be filled in]] [["]]},
-	{leftgutter = 35, --[[To be filled in]]},
-	{leftgutter = 45, --[[To be filled in]]}
+	{leftgutter = 10, [[Esc]],"`","1","2","3","4","5","6","7","8","9","0","-","="},
+	{leftgutter = 15, [[Tab]],"q","w","e","r","t","y","u","i","o","p","[","]",[[\]]}, --Double square brackets are an alternative to quotes
+	{leftgutter = 25, [[Caps]],"a","s","d","f","g","h","j","k","l","p","[";"]",[[']]},
+	{leftgutter = 35, [[Shift]],"z","x","c","v","b","n","m",[[,]],[[.]],[[/]],[[Shift]]},
+	{leftgutter = 45, [[Shift]],"z","x","c","v","b","n","m",[[,]],[[.]],[[/]],[[Shift]]}
 }
 
 layout = en_us
