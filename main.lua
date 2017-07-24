@@ -1,12 +1,16 @@
 en_us = {
-	{"Esc","`","1","2","3","4","5","6","7","8","9","0","-","=",   leftgutter = 0},
-	{"Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]], leftgutter = 10}, --Double square brackets are an alternative to quotes
-	{--[[To be filled in]] [["]], leftgutter = 20},
-	{--[[To be filled in]] leftgutter = 30},
-	{--[[To be filled in]] leftgutter = 40}
+	{leftgutter = 0, "Esc","`","1","2","3","4","5","6","7","8","9","0","-","="},
+	{leftgutter = 10, "Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]]}, --Double square brackets are an alternative to quotes
+	{leftgutter = 20, --[[To be filled in]] [["]]},
+	{leftgutter = 30, --[[To be filled in]]},
+	{leftgutter = 40, --[[To be filled in]]}
 }
 
 layout = en_us
+scales = {
+	tab = 1.5,
+	shift = 2.0,
+}
 keywidth, keyheight = 50, 50 --Placeholder values, maybe we can detect DPI to change these
 keymargin_x, keymargin_y = keywidth/10, keyheight/10 --Placeholder values
 
@@ -18,15 +22,22 @@ end
 function love.draw()
 	love.graphics.clear(26, 26, 26)
 	love.graphics.setColor(51,51,51,255)
+
 	for row_i, row in ipairs(layout) do
-		keystart_x = row.leftgutter or 0
+		rowstart_x = row.leftgutter or 0
 		for key_i, key in ipairs(row) do
-			--Special-case keys set x, y, width and height
-			--else
-			local x, y = keystart_x, row_i * (keyheight + keymargin_y * 2)
+			local x, y = rowstart_x, row_i * (keyheight + keymargin_y * 2)
 			local width, height = keywidth, keyheight
+
+			--Special-case keys
+			if key == "Tab" then
+				width = width * scales.tab
+			elseif key == "Shift" then
+				width = width * scales.shift
+			end
+
 			love.graphics.rectangle("fill", x, y, width, height)
-			keystart_x = keystart_x + width + keymargin_x * 2
+			rowstart_x = rowstart_x + width + keymargin_x * 2
 		end
 	end
 end
