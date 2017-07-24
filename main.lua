@@ -1,17 +1,18 @@
 en_us = {
-	{"Esc","`","1","2","3","4","5","6","7","8","9","0","-","=", leftgutter = 0},
-	{"Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]]}, --Double square brackets are an alternative to quotes
-	{--[[To be filled in]] [["]]},
-	{--[[To be filled in]]},
-	{--[[To be filled in]]}
+	{"Esc","`","1","2","3","4","5","6","7","8","9","0","-","=",   leftgutter = 0},
+	{"Tab","q","w","e","r","t","y","u","i","o","p","[","]",[[\]], leftgutter = 10}, --Double square brackets are an alternative to quotes
+	{--[[To be filled in]] [["]], leftgutter = 20},
+	{--[[To be filled in]] leftgutter = 30},
+	{--[[To be filled in]] leftgutter = 40}
 }
 
 layout = en_us
-keywidth, keyheight = 100, 100 --Placeholder values
-keymargin_x, keymargin_y = 10, 10 --Placeholder values
+keywidth, keyheight = 50, 50 --Placeholder values, maybe we can detect DPI to change these
+keymargin_x, keymargin_y = keywidth/10, keyheight/10 --Placeholder values
 
 function love.load()
 	love.window.setTitle("Best Keyboard Ever")
+	love.window.setMode(1280, 400, {resizable = true})
 end
 
 function love.draw()
