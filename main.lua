@@ -8,6 +8,12 @@ en_us = {
 	{leftgutter = 45, --[[To be filled in]]}
 }
 
+named_keys = {
+	Tab = "\t",
+	Space = " ",
+	Enter = "\n",
+}
+
 layout = en_us
 scales = {
 	tab = 1.5,
@@ -16,7 +22,8 @@ scales = {
 
 keywidth, keyheight = 50, 50 --Placeholder values, maybe we can detect DPI to change these
 keymargin_x, keymargin_y = keywidth/10, keyheight/10 --Placeholder values
-mouseover_key = nil
+click = nil
+presses = {}
 
 function love.load()
 	love.window.setTitle("Best Keyboard Ever")
@@ -25,10 +32,20 @@ function love.load()
 end
 
 function love.update()
-	local x, y = love.mouse.getPosition()
-	local key = key_collide(global_keys, x, y,
-		function (key) key.is_hover = true end,
-		function (key) key.is_hover = false end)
+	--Iterate over the keys, and mark the one (if any) that's being hovered.
+	keys_map(global_keys, key_set_hover_state)
+end
+
+function love.mousepressed(x, y, button, istouch)
+	keys_map(global_keys,
+		function(key)
+			if key_collide(key, x, y) then
+				if button == 1 then
+					io.write(named_keys[key.text] or key.text)
+					io.flush()
+				end
+			end
+		end)
 end
 
 function love.draw()
@@ -37,8 +54,9 @@ function love.draw()
 	for row_i, row in ipairs(layout) do
 		for key_i, key in ipairs(row) do
 			key = global_keys[row_i][key_i]
-			if key.is_hover then
-				key.is_hover = false
+			if key.is_hover and love.mouse.isDown(1) then
+				love.graphics.setColor(72, 104, 96, 255)
+			elseif key.is_hover then
 				love.graphics.setColor(235,235,235,255)
 			else
 				love.graphics.setColor(51,51,51,255)

@@ -17,12 +17,6 @@ function generate_keys(keylayout)
 				width = width * scales.shift
 			end
 
-			--Mouse-over
-			if key == mouseover_key then
-				love.graphics.setColor(235, 235, 235, 255)
-			end
-
-			--love.graphics.rectangle("fill", x, y, width, height)
 			keys[row_i][key_i] = {x = x, y = y, width = width, height = height, text = key}
 			x = x + width + keymargin_x * 2
 		end
@@ -31,20 +25,26 @@ function generate_keys(keylayout)
 	return keys
 end
 
---If x,y is a point in a key, return that key, else return nil.
---If a collide_action is provided, call it, passing the colliding key as its sole argument.
---If a not_collide_action is provided, call it, passing any not-colliding key as its sole argument.
-function key_collide(keys, x, y, collide_action, not_collide_action)
-	local return_key = nil
+--Returns true if x,y is a point in key.
+function key_collide(key, x, y)
+	return (x >= key.x and x <= key.x + key.width) and (y >= key.y and y <= key.y + key.height)
+end
+
+--Calls action for each key, passing said key as the argument.
+function keys_map(keys, action)
 	for row_i, row in ipairs(keys) do
 		for key_i, key in ipairs(row) do
-			if (x >= key.x and x <= key.x + key.width) and (y >= key.y and y <= key.y + key.height) then
-				if collide_action then collide_action(key) end
-				return_key = key
-			else
-				if not_collide_action then not_collide_action(key) end
-			end
+			action(key)
 		end
 	end
-	return return_key
+end
+
+--Sets the key's hover state if the mouse is within the key bounds.
+function key_set_hover_state(key)
+	local x, y = love.mouse.getPosition()
+	if key_collide(key, x, y) then
+		key.is_hover = true
+	else
+		key.is_hover = false
+	end
 end
