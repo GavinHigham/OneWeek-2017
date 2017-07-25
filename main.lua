@@ -16,15 +16,16 @@ named_keys = {
 	Enter = "\n",
 	Shift = "",
 }
-
-layout = en_us
+--Used to alter the size of particular keys.
 scales = {
 	tab = 1.5,
 	shift = 2.0,
 }
 
+layout = en_us
 keywidth, keyheight = 50, 50 --Placeholder values, maybe we can detect DPI to change these
 keymargin_x, keymargin_y = keywidth/10, keyheight/10 --Placeholder values
+labeloffset_x, labeloffset_y = 20, 15
 
 function love.load()
 	love.window.setTitle("Best Keyboard Ever")
@@ -62,11 +63,9 @@ function love.draw()
 			love.graphics.setColor(51,51,51,255)
 		end
 		love.graphics.rectangle("fill", key.x, key.y, key.width, key.height, key.corner_radius or 0)
-		--love.graphics.setColor(255, 255, 255, 255)
 		love.graphics.setColor(text_color[1], text_color[2], text_color[3])
 		local text = key.text
 		if love.keyboard.isDown("capslock", "rshift", "lshift") and #text == 1 then text = string.upper(text) end
-		love.graphics.print(text, key.x+20, key.y+15)
-		--love.graphics.print({key_text_color, key.text}, key.x, key.y)
+		love.graphics.print(text, key.label_x, key.label_y)
 	end)
 end

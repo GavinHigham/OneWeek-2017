@@ -9,15 +9,25 @@ function generate_keys(keylayout)
 
 		for key_i, key in ipairs(row) do
 			local width, height = keywidth, keyheight
+			local lx, ly = labeloffset_x, labeloffset_y
 
 			--Special-case keys
 			if key == "Tab" then
 				width = width * scales.tab
 			elseif key == "Shift" then
 				width = width * scales.shift
+			elseif key == "Caps" then
+				lx = 9
+			elseif key == "Esc" then
+				lx = 14
 			end
 
-			keys[row_i][key_i] = {x = x, y = y, width = width, height = height, text = key, corner_radius = 5}
+			keys[row_i][key_i] = {
+				x = x, y = y,
+				width = width, height = height,
+				text = key, corner_radius = 5,
+				label_x = lx+x, label_y = ly+y
+			}
 			x = x + width + keymargin_x * 2
 		end
 	end
