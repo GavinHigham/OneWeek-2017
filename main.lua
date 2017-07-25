@@ -14,6 +14,12 @@ named_keys = {
 	Enter = "\n",
 }
 
+named_keys = {
+	Tab = "\t",
+	Space = " ",
+	Enter = "\n",
+}
+
 layout = en_us
 scales = {
 	tab = 1.5,
