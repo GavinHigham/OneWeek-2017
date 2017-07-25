@@ -38,31 +38,35 @@ function love.update()
 end
 
 function love.mousepressed(x, y, button, istouch)
-	keys_map(global_keys,
-		function(key)
-			if key_collide(key, x, y) then
-				if button == 1 then
-					io.write(named_keys[key.text] or key.text)
-					io.flush()
-				end
+	keys_map(global_keys, function(key)
+		if key_collide(key, x, y) then
+			if button == 1 then
+				io.write(named_keys[key.text] or key.text)
+				io.flush()
 			end
-		end)
+		end
+	end)
 end
 
 function love.draw()
 	love.graphics.clear(26, 26, 26)
 
-	for row_i, row in ipairs(layout) do
-		for key_i, key in ipairs(row) do
-			key = global_keys[row_i][key_i]
-			if key.is_hover and love.mouse.isDown(1) then
-				love.graphics.setColor(72, 104, 96, 255)
-			elseif key.is_hover then
-				love.graphics.setColor(235,235,235,255)
-			else
-				love.graphics.setColor(51,51,51,255)
-			end
-			love.graphics.rectangle("fill", key.x, key.y, key.width, key.height)
+	keys_map(global_keys, function(key)
+		local text_color = {235, 235, 235}
+		if key.is_hover and love.mouse.isDown(1) then
+			love.graphics.setColor(72, 104, 96, 255)
+		elseif key.is_hover then
+			love.graphics.setColor(235,235,235,255)
+			text_color = {16, 16, 16}
+		else
+			love.graphics.setColor(51,51,51,255)
 		end
-	end
+		love.graphics.rectangle("fill", key.x, key.y, key.width, key.height, key.corner_radius or 0)
+		--love.graphics.setColor(255, 255, 255, 255)
+		love.graphics.setColor(text_color[1], text_color[2], text_color[3])
+		local text = key.text
+		if love.keyboard.isDown("capslock", "rshift", "lshift") and #text == 1 then text = string.upper(text) end
+		love.graphics.print(text, key.x+20, key.y+15)
+		--love.graphics.print({key_text_color, key.text}, key.x, key.y)
+	end)
 end
