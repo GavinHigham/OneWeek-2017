@@ -35,6 +35,12 @@ function generate_keys(keylayout)
 	return keys
 end
 
+function emit_keypress(key)
+	--Special case logic can occur here.
+	io.write(named_keys[key.text] or key.text)
+	io.flush()
+end
+
 --Returns true if x,y is a point in a rectangle positioned at rx,ry with width,height of rw,rh.
 function rect_collide(rx, ry, rw, rh, x, y)
 	return (x >= rx and x <= rx + rw) and (y >= ry and y <= ry + rh)

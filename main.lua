@@ -42,8 +42,7 @@ function love.mousepressed(x, y, button, istouch)
 	keys_map(global_keys, function(key)
 		if key_collide(key, x, y) then
 			if button == 1 then
-				io.write(named_keys[key.text] or key.text)
-				io.flush()
+				emit_keypress(key)
 			end
 		end
 	end)
