@@ -21,7 +21,16 @@ named_keys = {
 
 key_drags = {
 	--Key string = {drag-right, drag-up, drag-left, drag-down}
-	["9"] = {")", "^", "(", "v"}	
+	["9"] = {")", "", "(", ""},
+	["0"] = {"{", "", "}", ""},
+	["8"] = {"[", "*", "]", ""},
+	["6"] = {"<", "^", ">", ""},
+	["5"] = {"", "%", "", ""},
+	["4"] = {"", "$", "", ""},
+	["3"] = {"", "#", "", ""},
+	["2"] = {"", "@", "", ""},
+	["1"] = {"", "!", "", ""},
+	["`"] = {"", "~", "", ""},
 }
 
 --Returns a table indexable by [row_i][key_i] to retrieve each key's x, y, width, height, and other key state.
