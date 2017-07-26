@@ -1,20 +1,6 @@
 require "keys"
 
-en_us = {
-	{leftgutter = 10, [[Esc]],[[`]],"1","2","3","4","5","6","7","8","9","0","-","="},
-	{leftgutter = 15, [[Tab]],"q","w","e","r","t","y","u","i","o","p","[","]",[[\]]},
-	{leftgutter = 25, [[Caps]],"a","s","d","f","g","h","j","k","l",";",[[']],"Enter"},
-	{leftgutter = 35, [[Shift]],"z","x","c","v","b","n","m",[[,]],[[.]],[[/]],[[Shift]]},
-}
-
-en_dv = {
-	{leftgutter = 10, [[Esc]],[[`]],"1","2","3","4","5","6","7","8","9","0","[","]"},
-	{leftgutter = 15, [[Tab]],[[']],[[,]],[[.]],"p","y","f","g","c","r","l",[[/]],"=",[[\]]},
-	{leftgutter = 25, [[Caps]],"a","o","e","u","i","d","h","t","n","s","-","Enter"},
-	{leftgutter = 35, [[Shift]],";","q","j","k","x","b","m","w","v","z",[[Shift]]},
-}
-
-layout = en_us
+layout = en_dv
 keywidth, keyheight = 80, 80 --Placeholder values, maybe we can detect DPI to change these
 keymargin_x, keymargin_y = keywidth/10, keyheight/10 --Placeholder values
 labeloffset_x, labeloffset_y = 20, 15
@@ -36,7 +22,7 @@ function love.mousepressed(x, y, button, istouch)
 	keys_map(global_keys, function(key)
 		if not istouch and key_collide(key, x, y) then
 			if button == 1 then
-				emit_keypress(key)
+				emit_keypress(key.text)
 			end
 		end
 	end)
@@ -58,15 +44,19 @@ function love.touchreleased(id, x, y, dx, dy, pressure)
 	local tx, ty = touches[id].x, touches[id].y
 	dx, dy = x - tx, y - ty
 	keys_map(global_keys, function(key)
-		if key_collide(key, x, y) and key_collide(key, tx, ty) then
-			emit_keypress(key)
+		--Touch started in this key
+		if key_collide(key, tx, ty) then
+			--Touch ended in this same key
+			if key_collide(key, x, y) then
+				emit_keypress(key.text)
+			else
+				--If there's a key drag, use it, otherwise emit the empty string.
+				emit_keypress((key_drags[key.text] or {})[key_drag_index(dx, dy)] or "")
+			end
 		end
+		--We don't care about touches that end in this key if they didn't start here.
 	end)
 
-	if dx > 0 then print "To the right"
-	elseif dx < 0 then print "To the left" end
-	if dy > 0 then print "Down"
-	elseif dy < 0 then print "Up" end
 	touches[id] = nil
 end
 

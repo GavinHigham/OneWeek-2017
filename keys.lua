@@ -1,3 +1,5 @@
+require "layouts"
+
 --Used to suppress or alter printing of particular key labels.
 named_keys = {
 	text = {
@@ -12,12 +14,14 @@ named_keys = {
 		Tab = 1.5,
 		Shift = 2.0,
 		Enter = 2.0,
+		Caps = 1.7,
+		Space = 5.0,
 	}
 }
 
 key_drags = {
 	--Key string = {drag-right, drag-up, drag-left, drag-down}
-	["9"] = {")", "", "(", ""}	
+	["9"] = {")", "^", "(", "v"}	
 }
 
 --Returns a table indexable by [row_i][key_i] to retrieve each key's x, y, width, height, and other key state.
@@ -56,12 +60,18 @@ function generate_keys(keylayout)
 end
 
 function key_drag_index(dx, dy)
-	
+	local a, b = dx > dy, dx > -dy
+	if a and b then return 1
+	elseif a and not b then return 2
+	elseif not a and not b then return 3
+	elseif not a and b then return 4
+	end
+	return nil
 end
 
-function emit_keypress(key)
+function emit_keypress(keytext)
 	--Special case logic can occur here.
-	io.write(named_keys.text[key.text] or key.text)
+	io.write(named_keys.text[keytext] or keytext)
 	io.flush()
 end
 
