@@ -1,3 +1,25 @@
+--Used to suppress or alter printing of particular key labels.
+named_keys = {
+	text = {
+		Esc = "",
+		Tab = "\t",
+		Caps = "",
+		Space = " ",
+		Enter = "\n",
+		Shift = "",
+	},
+	scales = {
+		Tab = 1.5,
+		Shift = 2.0,
+		Enter = 2.0,
+	}
+}
+
+key_drags = {
+	--Key string = {drag-right, drag-up, drag-left, drag-down}
+	["9"] = {")", "", "(", ""}	
+}
+
 --Returns a table indexable by [row_i][key_i] to retrieve each key's x, y, width, height, and other key state.
 function generate_keys(keylayout)
 	local keys = {}
@@ -12,11 +34,9 @@ function generate_keys(keylayout)
 			local lx, ly = labeloffset_x, labeloffset_y
 
 			--Special-case keys
-			if key == "Tab" then
-				width = width * scales.tab
-			elseif key == "Shift" then
-				width = width * scales.shift
-			elseif key == "Caps" then
+			width = width * (named_keys.scales[key] or 1)
+
+			if key == "Caps" then
 				lx = 9
 			elseif key == "Esc" then
 				lx = 14
@@ -35,9 +55,13 @@ function generate_keys(keylayout)
 	return keys
 end
 
+function key_drag_index(dx, dy)
+	
+end
+
 function emit_keypress(key)
 	--Special case logic can occur here.
-	io.write(named_keys[key.text] or key.text)
+	io.write(named_keys.text[key.text] or key.text)
 	io.flush()
 end
 
@@ -70,15 +94,5 @@ function keys_map(keys, action)
 		for key_i, key in ipairs(row) do
 			action(key)
 		end
-	end
-end
-
---Sets the key's hover state if the mouse is within the key bounds.
-function key_set_hover_state(key)
-	local x, y = love.mouse.getPosition()
-	if key_collide(key, x, y) then
-		key.is_hover = true
-	else
-		key.is_hover = false
 	end
 end
