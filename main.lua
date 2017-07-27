@@ -1,16 +1,21 @@
 require "keys"
 
 layout = en_dv
-keywidth, keyheight = 80, 80 --Placeholder values, maybe we can detect DPI to change these
-keymargin_x, keymargin_y = keywidth/10, keyheight/10 --Placeholder values
-labeloffset_x, labeloffset_y = 20, 15
+
+keywidth, keyheight = 85, 85 --Placeholder values, maybe we can detect DPI to change these
+keymargin_x, keymargin_y = keywidth/20, keyheight/20 --Placeholder values
+labeloffset_x, labeloffset_y = keywidth/2, keyheight/2
 last_input_was_mouse = false --To stop the infinite hover from an invisible mouse cursor.
 touches = {}
 
 function love.load()
 	love.window.setTitle("Best Keyboard Ever")
-	love.window.setMode(1280, 400, {resizable = true})
+	local width, height = love.window.getDesktopDimensions()
+	local keyboard_height = (keyheight+keymargin_y*2)*5
+	love.window.setMode(width, keyboard_height, {resizable = true, x = 0, y = height-keyboard_height, highdpi = true})
 	global_keys = generate_keys(layout)
+	font = love.graphics.newFont("UbuntuMono-R.ttf", 20)
+	love.graphics.setFont(font)
 end
 
 function love.update()
@@ -67,15 +72,22 @@ function love.draw()
 		local x, y = love.mouse.getPosition()
 		local mouse_over = key_collide(key, x, y) 
 		local is_pressed = love.mouse.isDown(1) and mouse_over and last_input_was_mouse
+		local is_dragged = false
 		local dragged_x, dragged_y = 0, 0
+		local drag_index = nil
 		for id, press in pairs(touches) do
 			local x, y = love.touch.getPosition(id)
 			local tx, ty = touches[id].x, touches[id].y
 			dragged_x, dragged_y = x - tx, y - ty
 			if key_collide(key, tx, ty) then is_pressed = true end
+			if is_pressed and not key_collide(key, x, y) then
+				is_dragged = true
+				drag_index = key_drag_index(dragged_x, dragged_y)
+			end
 		end
 
 		local text_color = {235, 235, 235}
+		local deselected_color = {115, 115, 115}
 		if is_pressed then
 			love.graphics.setColor(72, 104, 96, 255)
 		elseif mouse_over and last_input_was_mouse then
@@ -85,9 +97,23 @@ function love.draw()
 			love.graphics.setColor(51,51,51,255)
 		end
 		love.graphics.rectangle("fill", key.x, key.y, key.width, key.height, key.corner_radius or 0)
-		love.graphics.setColor(text_color[1], text_color[2], text_color[3])
+		love.graphics.setColor(text_color)
 		local text = key.text
 		if love.keyboard.isDown("capslock", "rshift", "lshift") and #text == 1 then text = string.upper(text) end
-		love.graphics.print(text, key.label_x, key.label_y)
+		if is_dragged then love.graphics.setColor(deselected_color) end
+		love.graphics.print(text, key.label_x-font:getWidth(text)/2, key.label_y-font:getHeight()/2, 0)
+		local drags = key_drags[key.text]
+		if drags then
+			--HACKY CODE FTW
+			for i = 1, 4 do
+				if is_dragged and drag_index == i then love.graphics.setColor(text_color) else love.graphics.setColor(deselected_color) end
+				if drags[i] then
+					if i == 1 then love.graphics.print(drags[i], key.label_x-font:getWidth(drags[i])/2, key.label_y-font:getHeight()*1.5, 0) end
+					if i == 2 then love.graphics.print(drags[i], key.label_x-font:getWidth(text)/2-font:getWidth(drags[i])*2, key.label_y-font:getHeight()/2, 0) end
+					if i == 3 then love.graphics.print(drags[i], key.label_x+font:getWidth(text)/2+font:getWidth(drags[i]), key.label_y-font:getHeight()/2, 0) end
+					if i == 4 then love.graphics.print(drags[i], key.label_x-font:getWidth(drags[i])/2, key.label_y+font:getHeight()*0.5, 0) end
+				end
+			end
+		end
 	end)
 end
